@@ -11,6 +11,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:background="@color/colorWhite"
     android:padding = "@dimen/main_screen_main_layout_padding"
     >
 
