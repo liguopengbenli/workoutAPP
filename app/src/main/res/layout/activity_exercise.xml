@@ -103,6 +103,7 @@
         android:layout_below="@id/toolbar_exercise_activity"
         android:gravity="center"
         android:orientation="vertical"
+        android:layout_above="@+id/rvExerciseStatus"
         android:visibility="gone"
         tools:visibility="visible"
         >
