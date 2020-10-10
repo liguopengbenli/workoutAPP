@@ -73,6 +73,26 @@
                     tools:text="10" />
             </LinearLayout>
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvFixText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="UPCOMING EXERCISE" />
+
+        <TextView
+            android:id="@+id/tvUpComingExName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="#212121"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:text="Exercise Name" />
+
     </LinearLayout>
 
 
@@ -87,7 +107,18 @@
         tools:visibility="visible"
         >
 
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            android:layout_weight="1"
+            android:contentDescription="@string/image"
+            android:src="@drawable/ic_jumping_jacks"
+            />
+
         <TextView
+            android:id="@+id/exName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="EXERCIES START"

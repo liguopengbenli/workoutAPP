@@ -3,12 +3,17 @@ package com.lig.a7minuteworkout
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_exercise.*
+import java.util.*
+import kotlin.collections.ArrayList
 
-class ExerciseActivity : AppCompatActivity() {
+class ExerciseActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
+
     private var restTimer: CountDownTimer? = null
     private var exTimer: CountDownTimer? = null
     private var restProgress = 0
@@ -16,6 +21,10 @@ class ExerciseActivity : AppCompatActivity() {
     private val exTimerDuration = 30
     private val restTimerDuration = 10
 
+    private var exerciseList: ArrayList<ExerciseModel>? = null
+    private var currentExercisePosition = -1
+
+    private var tts: TextToSpeech? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise)
@@ -29,6 +38,9 @@ class ExerciseActivity : AppCompatActivity() {
             onBackPressed()
         }
 
+        tts = TextToSpeech(this, this)
+
+        exerciseList = Constants.defaultExerciseList()
         setupRestView()
     }
 
@@ -36,6 +48,14 @@ class ExerciseActivity : AppCompatActivity() {
         if(restTimer !=null){
             restTimer!!.cancel()
             restProgress = 0
+        }
+        if(exTimer != null){
+            exTimer!!.cancel()
+            exProgress = 0
+        }
+        if(tts!=null){
+            tts!!.stop()
+            tts!!.shutdown()
         }
         super.onDestroy()
     }
@@ -51,6 +71,7 @@ class ExerciseActivity : AppCompatActivity() {
 
                 override fun onFinish() {
                     Toast.makeText(this@ExerciseActivity, "Here now we will start exercise",Toast.LENGTH_SHORT).show()
+                    currentExercisePosition++
                     setupExView()
                 }
             }.start()
@@ -66,7 +87,11 @@ class ExerciseActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                Toast.makeText(this@ExerciseActivity, "Here now we get some rest",Toast.LENGTH_SHORT).show()
+                if(currentExercisePosition < exerciseList!!.size - 1){
+                    setupRestView()
+                }else{
+                    Toast.makeText(this@ExerciseActivity, "You have completed workout",Toast.LENGTH_SHORT).show()
+                }
             }
         }.start()
     }
@@ -78,6 +103,7 @@ class ExerciseActivity : AppCompatActivity() {
             restTimer!!.cancel()
             restProgress = 0
         }
+        tvUpComingExName.text = "${exerciseList!![currentExercisePosition+1].name}"
         setRestProgressBar()
     }
 
@@ -88,7 +114,29 @@ class ExerciseActivity : AppCompatActivity() {
             exTimer!!.cancel()
             exProgress = 0
         }
+        speakOut(exerciseList!![currentExercisePosition].name)
         setExProgressBar()
+
+        ivImage.setImageResource(exerciseList!![currentExercisePosition].image)
+        exName.text = exerciseList!![currentExercisePosition].name
+    }
+
+    override fun onInit(status: Int) {
+        if(status == TextToSpeech.SUCCESS){
+            val result = tts!!.setLanguage(Locale.US)
+            if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
+                Log.e("TTS", "The language specified is not supported")
+            }else{
+
+            }
+        }else{
+            Log.e("TTS", "Initilisation failed")
+
+        }
+    }
+
+    private fun speakOut(text : String){
+        tts!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
     }
 
 }
