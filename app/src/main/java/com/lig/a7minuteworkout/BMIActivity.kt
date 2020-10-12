@@ -2,6 +2,7 @@ package com.lig.a7minuteworkout
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_b_m_i.*
@@ -9,6 +10,12 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 class BMIActivity : AppCompatActivity() {
+
+    val METRIC_UNITS_VIEW = "METRIC_UNIT_VIEW"
+    val US_UNITS_VIEW = "US_UNIT_VIEW"
+
+    var currentVisibleView: String = METRIC_UNITS_VIEW
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_b_m_i)
@@ -29,6 +36,16 @@ class BMIActivity : AppCompatActivity() {
             }else{
                 Toast.makeText(this@BMIActivity, "Please enter valid value", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        makeVisibleMetricUnitView()
+
+        rgUnits.setOnCheckedChangeListener { group, checkedId ->
+            if(checkedId == R.id.rbMetricsUnits){
+                makeVisibleMetricUnitView()
+            }else{
+                makeVisibleUsUnitView()
+            }
 
         }
     }
@@ -38,6 +55,22 @@ class BMIActivity : AppCompatActivity() {
         val heightValue: Float = etMetricUnitHeight.text.toString().toFloat() /100
         val weightValue: Float = etMetricUnitWeight.text.toString().toFloat()
         return (weightValue / (heightValue * heightValue))
+    }
+
+
+    private fun makeVisibleUsUnitView(){
+        currentVisibleView = US_UNITS_VIEW
+        llMetricUnitsView.visibility = GONE
+        llUsUnitsView.visibility = VISIBLE
+        llDisplayBMIResult.visibility = GONE
+    }
+
+    private fun makeVisibleMetricUnitView(){
+        currentVisibleView = METRIC_UNITS_VIEW
+        llMetricUnitsView.visibility = VISIBLE
+        llUsUnitsView.visibility = GONE
+        llDisplayBMIResult.visibility = GONE //important using Gone to make space for layout
+        //clear text
     }
 
     private fun displayBMIResult(bmi: Float){
