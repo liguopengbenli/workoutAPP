@@ -39,4 +39,19 @@ class sqliteOpenHelper(context: Context, factory: SQLiteDatabase.CursorFactory?)
         db.close()
     }
 
+    fun getAllCompletedDateList() : ArrayList<String>{
+        val list = ArrayList<String>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_HISTORY", null)
+
+        while (cursor.moveToNext()){
+            val dateValue = cursor.getString(cursor.getColumnIndex(COLUMN_COMPLETED_DATE))
+            list.add(dateValue)
+        }
+        cursor.close()
+        return list
+    }
+
+
+
 }
